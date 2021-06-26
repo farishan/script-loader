@@ -1,0 +1,26 @@
+{
+  "name": "@farishan/script-loader",
+  "version": "0.1.0",
+  "description": "Client-side JS file loader",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx uglifyjs index.js -o dist/script-loader.js && npx uglifyjs index.js -o dist/script-loader.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/farishan/script-loader.git"
+  },
+  "keywords": [
+    "javascript"
+  ],
+  "author": "Faris Han",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/farishan/script-loader/issues"
+  },
+  "homepage": "https://github.com/farishan/script-loader#readme"
+}

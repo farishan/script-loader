@@ -237,12 +237,7 @@ function ScriptLoader(options = {}) {
       const progress = (payload.value / payload.total) * 100;
       console.log(`Progress: ${progress} %`);
 
-      const messageHtml = `
-        <div>
-          <label style="display:none">Loading progress:</label>
-          <progress value="${payload.value}" max="${payload.total}"> ${progress}% </progress>
-        </div>
-      `;
+      const messageHtml = `<div><label style="display:none">Loading progress:</label><progress value="${payload.value}" max="${payload.total}"> ${progress}% </progress></div>`;
       this.logWindow.innerHTML += messageHtml;
     } else if (message === "finish") {
       const message = `Total load time: ${payload} seconds`;
