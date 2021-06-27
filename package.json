@@ -1,6 +1,6 @@
 {
   "name": "@farishan/script-loader",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Client-side JS file loader",
   "main": "index.js",
   "directories": {
