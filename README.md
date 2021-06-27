@@ -11,5 +11,4 @@ See `./examples` directory.
 
 ---
 
-Faris Han 2019
-Last updated: 2021-06-26
+Faris Han 2019 - 2021
