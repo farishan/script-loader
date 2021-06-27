@@ -4,14 +4,30 @@
  * JavaScript File Loader - for loading `.js` file into `.html` file.
  *
  * @param {Object} options - Options for the script loader
- * @param {Boolean} options.useLogger - Log toggler
- * @param {string} options.path - Script directory path. e.g. "./" or "./scripts/"
+ * @param {Boolean} options.useLogger - _(Optional)_ Log toggler
+ * @param {string} options.path - _(Optional)_ Script directory path. e.g. "./" or "./scripts/"
+ * @param {string[]} options.statics - A list of script names without extension, that will loaded and always in the document.
+ * @param {string[]} options.dynamics - _(Optional)_ A list of script names without extension, that only loaded in specific scenario, will be deleted if not needed.
+ * @param {string} options.main - A name of script without extension. Special static script. Connector of all scripts. Always loaded last.
  */
 function ScriptLoader(options = {}) {
-  const { useLogger, path, id } = options;
+  const {
+    useLogger,
+    path,
+    id,
+
+    // script types
+    statics,
+    dynamics,
+    main,
+  } = options;
 
   this.name = "[SCRIPT-LOADER]";
   this.slug = "script-loader";
+
+  if (!statics || !main) {
+    console.error(`${this.name} "statics" and "main" options are required.`);
+  }
 
   this.useLogger = useLogger === undefined ? false : useLogger;
   this.logWindow;
@@ -23,11 +39,18 @@ function ScriptLoader(options = {}) {
   this.endTime = null;
 
   /**
-   * Initialize the Script Loader
-   * @param {ScriptObject} scriptObject - An object containing script types and names. Please use Script Object Factory.
    * @todo Validate `scriptObject` before use
    */
-  this.init = (scriptObject) => {
+  const scriptObject = {
+    statics,
+    dynamics,
+    main,
+  };
+
+  /**
+   * Initialize the Script Loader
+   */
+  this.init = () => {
     this.startTime = Date.now();
 
     if (this.useLogger) {
@@ -43,12 +66,14 @@ function ScriptLoader(options = {}) {
     this.mainContainer.dataset.name = `${this.slug}_main-container`;
     this.mainContainer.id = `${id ? id : ID()}_mainContainer`;
 
-    this.staticContainer.dataset.name = this.slug + "_" + "static-scripts-container";
+    this.staticContainer.dataset.name =
+      this.slug + "_" + "static-scripts-container";
     this.mainContainer.appendChild(this.staticContainer);
-    this.dynamicContainer.dataset.name = this.slug + "_" + "dynamic-scripts-container";
+    this.dynamicContainer.dataset.name =
+      this.slug + "_" + "dynamic-scripts-container";
     this.mainContainer.appendChild(this.dynamicContainer);
 
-    document.body.innerHTML += '<!-- Loaded with Script Loader -->\n'
+    document.body.innerHTML += "<!-- Loaded with Script Loader -->\n";
     document.body.appendChild(this.mainContainer);
   };
 
@@ -56,7 +81,7 @@ function ScriptLoader(options = {}) {
     // loading static scripts.
     if (this.useLogger) this.log("Start loading scripts...", true);
 
-    const promises = []
+    const promises = [];
 
     // Load static scripts
     if (scriptObject.statics && scriptObject.statics.length > 0) {
@@ -68,20 +93,22 @@ function ScriptLoader(options = {}) {
         }
       });
 
-      promises.push(promise1)
+      promises.push(promise1);
     }
 
     // Load initial dynamic scripts
     if (scriptObject.dynamics && scriptObject.dynamics.length > 0) {
-      const promise2 = this.loadScripts(false, scriptObject.dynamics).then(() => {
-        // Scripts loaded.
+      const promise2 = this.loadScripts(false, scriptObject.dynamics).then(
+        () => {
+          // Scripts loaded.
 
-        if (this.useLogger) {
-          this.log(`dynamic scripts loaded`, true);
+          if (this.useLogger) {
+            this.log(`dynamic scripts loaded`, true);
+          }
         }
-      });
+      );
 
-      promises.push(promise2)
+      promises.push(promise2);
     }
 
     return Promise.all(promises).then(() => {
@@ -92,7 +119,7 @@ function ScriptLoader(options = {}) {
           this.finish();
         });
       }
-    })
+    });
   };
 
   /**
@@ -157,7 +184,9 @@ function ScriptLoader(options = {}) {
 
     if (this.useLogger) {
       this.log(
-        `Loading ${isStatic ? "static" : "dynamic"} script named <strong>${name}</strong>...`,
+        `Loading ${
+          isStatic ? "static" : "dynamic"
+        } script named <strong>${name}</strong>...`,
         true
       );
     }
@@ -260,26 +289,8 @@ function ScriptLoader(options = {}) {
 
   // Helpers
   function ID() {
-    return '_' + Math.random().toString(36).substr(2, 9);
-  };
-}
-
-/**
- * Script Object Factory
- *
- * @param {Object} scriptsByType - An object containing script type properties and its values.
- * @param {string[]} scriptsByType.statics - A list of script names without extension, that will loaded and always in the document.
- * @param {string[]} scriptsByType.dynamics - _(Optional)_ A list of script names without extension, that only loaded in specific scenario, will be deleted if not needed.
- * @param {string} scriptsByType.main - A name of script without extension. Special static script. Connector of all scripts. Always loaded last.
- */
-function ScriptObject(scriptsByType) {
-  const { statics = Array, dynamics = Array, main = String } = scriptsByType;
-
-  this.statics = statics;
-  this.dynamics = dynamics;
-  this.main = main;
-
-  return this;
+    return "_" + Math.random().toString(36).substr(2, 9);
+  }
 }
 
 // Usage: see ./examples

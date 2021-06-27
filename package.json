@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx uglifyjs index.js -o dist/script-loader.js && npx uglifyjs index.js -o dist/script-loader.min.js"
+    "build": "npx uglifyjs index.js -o dist/script-loader.js && npx uglifyjs index.js -c -o dist/script-loader.min.js"
   },
   "repository": {
     "type": "git",
