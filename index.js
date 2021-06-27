@@ -8,7 +8,7 @@
  * @param {string} options.path - Script directory path. e.g. "./" or "./scripts/"
  */
 function ScriptLoader(options = {}) {
-  const { useLogger, path } = options;
+  const { useLogger, path, id } = options;
 
   this.name = "[SCRIPT-LOADER]";
   this.slug = "script-loader";
@@ -40,11 +40,12 @@ function ScriptLoader(options = {}) {
 
   this.setupScriptContainers = () => {
     this.mainContainer.style.position = "absolute";
-    this.mainContainer.id = `${this.slug}_main-container`;
+    this.mainContainer.dataset.name = `${this.slug}_main-container`;
+    this.mainContainer.id = `${id ? id : ID()}_mainContainer`;
 
-    this.staticContainer.id = this.slug + "_" + "static-scripts-container";
+    this.staticContainer.dataset.name = this.slug + "_" + "static-scripts-container";
     this.mainContainer.appendChild(this.staticContainer);
-    this.dynamicContainer.id = this.slug + "_" + "dynamic-scripts-container";
+    this.dynamicContainer.dataset.name = this.slug + "_" + "dynamic-scripts-container";
     this.mainContainer.appendChild(this.dynamicContainer);
 
     document.body.innerHTML += '<!-- Loaded with Script Loader -->\n'
@@ -220,7 +221,7 @@ function ScriptLoader(options = {}) {
       const logWindowTitle = this.name + " Log Window";
       this.logWindow = document.createElement("div");
       this.logWindow.title = logWindowTitle;
-      this.logWindow.id = this.slug + "_" + "log-window";
+      this.logWindow.dataset.name = this.slug + "_" + "log-window";
       this.logWindow.setAttribute(
         "style",
         "box-sizing:border-box;color:#222;font-size:0.8em;border:1px solid;padding:0.5rem;max-height:584px;overflow-y:auto;"
@@ -256,6 +257,11 @@ function ScriptLoader(options = {}) {
   };
 
   return this;
+
+  // Helpers
+  function ID() {
+    return '_' + Math.random().toString(36).substr(2, 9);
+  };
 }
 
 /**
